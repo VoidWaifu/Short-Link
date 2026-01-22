@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Short-Link - Создание коротких ссылок</title>
+    <title>Hide-Link - Спрячь свою ссылку</title>
     <style>
         * {
             margin: 0;
@@ -305,26 +305,26 @@
     <div class="scanlines"></div>
     <div class="container">
         <header>
-            <h1>Short-Link</h1>
-            <p class="subtitle">Создавайте короткие ссылки мгновенно</p>
+            <h1>Hide-Link</h1>
+            <p class="subtitle">Спрячьте свою ссылку</p>
         </header>
         
         <main>
             <div class="main-card">
                 <div class="input-group">
-                    <label for="urlInput">Введите URL для сокращения:</label>
+                    <label for="urlInput">Введите URL для сокрытия:</label>
                     <input type="url" id="urlInput" placeholder="https://example.com/очень-длинный-путь-к-странице" required>
                 </div>
                 
                 <div class="input-group">
-                    <label for="nameInput">Название ссылки (необязательно):</label>
+                    <label for="nameInput">Название ссылки (для вашего удобства):</label>
                     <input type="text" id="nameInput" placeholder="Моя важная ссылка" maxlength="50">
                 </div>
                 
-                <button class="btn" id="createBtn">Создать короткую ссылку</button>
+                <button class="btn" id="createBtn">Создать скрытую ссылку</button>
                 
                 <div class="result" id="result">
-                    <p><strong>Ваша короткая ссылка:</strong></p>
+                    <p><strong>Ваша скрытая ссылка:</strong></p>
                     <p class="short-url" id="shortUrl"></p>
                     <button class="btn btn-copy" id="copyBtn">Копировать</button>
                 </div>
@@ -332,7 +332,7 @@
             
             <div class="links-container">
                 <div class="links-header">
-                    <h2>Мои ссылки</h2>
+                    <h2>Мои скрытые ссылки</h2>
                     <button class="btn btn-delete" id="clearBtn" style="width: auto; padding: 8px 15px;">Очистить все</button>
                 </div>
                 
@@ -351,7 +351,7 @@
     <div class="notification" id="notification"></div>
     
     <script>
-        const BASE_URL = 'https://voidwaifu.github.io/Short-Link';
+        const BASE_URL = 'https://voidwaifu.github.io';
         
         function encodeUrlToShort(url) {
             try {
@@ -385,15 +385,15 @@
         }
         
         function saveToLocalStorage(links) {
-            localStorage.setItem('shortLinks', JSON.stringify(links));
+            localStorage.setItem('hideLinks', JSON.stringify(links));
         }
         
         function loadFromLocalStorage() {
-            const data = localStorage.getItem('shortLinks');
+            const data = localStorage.getItem('hideLinks');
             return data ? JSON.parse(data) : [];
         }
         
-        function createShortLink() {
+        function createHideLink() {
             const urlInput = document.getElementById('urlInput');
             const nameInput = document.getElementById('nameInput');
             const url = urlInput.value.trim();
@@ -457,7 +457,7 @@
         
         function clearAllLinks() {
             if (confirm('Удалить все сохраненные ссылки?')) {
-                localStorage.removeItem('shortLinks');
+                localStorage.removeItem('hideLinks');
                 renderLinks();
                 showNotification('Все ссылки удалены');
             }
@@ -516,7 +516,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderLinks();
             
-            document.getElementById('createBtn').addEventListener('click', createShortLink);
+            document.getElementById('createBtn').addEventListener('click', createHideLink);
             document.getElementById('copyBtn').addEventListener('click', () => {
                 const shortUrl = document.getElementById('shortUrl').textContent;
                 copyToClipboard(shortUrl);
@@ -524,8 +524,14 @@
             document.getElementById('clearBtn').addEventListener('click', clearAllLinks);
             
             document.getElementById('urlInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') createShortLink();
+                if (e.key === 'Enter') createHideLink();
             });
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const presetUrl = urlParams.get('url');
+            if (presetUrl) {
+                document.getElementById('urlInput').value = decodeURIComponent(presetUrl);
+            }
         });
     </script>
 </body>
