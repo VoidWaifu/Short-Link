@@ -307,10 +307,10 @@
         .toggle-group {
             display: inline-flex;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 6px;
-            width: 100%;
-            max-width: 420px;
+            width: min(100%, 420px);
+            margin: 0 auto;
             padding: 6px;
             border-radius: 999px;
             background: var(--bg-secondary);
@@ -341,7 +341,7 @@
         .toggle-option {
             position: relative;
             flex: 1;
-            min-width: 150px;
+            min-width: 140px;
             padding: 0;
             border-radius: 999px;
             cursor: pointer;
@@ -350,6 +350,8 @@
             border: none;
             margin: 0;
             z-index: 1;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .toggle-option:hover span {
@@ -485,10 +487,13 @@
             .toggle-group {
                 max-width: 98vw;
                 padding: 4px;
+                flex-wrap: nowrap;
+                width: min(100%, 420px);
             }
             .toggle-option span {
                 font-size: 0.9rem;
                 padding: 6px 8px;
+                touch-action: manipulation;
             }
             .scanlines {
                 background-size: 100% 2px;
@@ -944,6 +949,7 @@
             function updateToggleHighlight() {
                 const group = document.querySelector('.toggle-group');
                 if (!group) return;
+                const options = Array.from(group.querySelectorAll('.toggle-option'));
                 const checked = group.querySelector('input:checked');
                 if (!checked) return;
                 const label = checked.closest('.toggle-option');
@@ -951,23 +957,20 @@
 
                 const groupRect = group.getBoundingClientRect();
                 const labelRect = label.getBoundingClientRect();
-                const leftPct = ((labelRect.left - groupRect.left) / groupRect.width) * 100;
-                const widthPct = (labelRect.width / groupRect.width) * 100;
+                const left = labelRect.left - groupRect.left;
+                const width = labelRect.width;
 
-                group.style.setProperty('--toggle-before-left', `${leftPct}%`);
-                group.style.setProperty('--toggle-before-width', `${widthPct}%`);
-             }
- 
+                group.style.setProperty('--toggle-before-left', `${left}px`);
+                group.style.setProperty('--toggle-before-width', `${width}px`);
+            }
+
             const group = document.querySelector('.toggle-group');
             if (group) {
                 group.classList.add('no-transition');
                 updateToggleHighlight();
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        group.classList.remove('no-transition');
-                    });
+                    group.classList.remove('no-transition');
                 });
-                setTimeout(updateToggleHighlight, 120);
 
                 group.addEventListener('change', updateToggleHighlight);
                 window.addEventListener('resize', updateToggleHighlight);
